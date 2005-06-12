@@ -1,0 +1,7 @@
+#PerlTrace all
+#PerlLoadModule Apache::DebugLog::Config
+#PerlLoadModule Apache2::DebugLog
+PerlLoadModule TestApache::does_it_work
+
+PerlDebugLogLevel 3
+PerlDebugLogDomain foo bar bitz
