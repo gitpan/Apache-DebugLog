@@ -4,14 +4,15 @@ use warnings FATAL => 'all';
 use strict;
 
 # cargo cult, do i even need to load RequestRec?
-use Apache2::RequestRec         ();
-use Apache2::Module             ();
-use Apache2::LogF               ();
+use Apache2::RequestRec ();
+use Apache2::ServerRec  ();
+use Apache2::Module     ();
+use Apache2::LogF       ();
 
 # import must be called so we use this normally
 use Apache::DebugLog::Config;
 
-our $VERSION    = '0.01';
+our $VERSION    = '0.02';
 
 =head1 NAME
 
@@ -57,6 +58,14 @@ sub Apache2::RequestRec::log_debug {
         and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
 }
 
+
+sub Apache2::ServerRec::log_debug {
+    my ($s, $domain, $level, @msg)  = @_;
+    my $conf = Apache2::Module::get_config(__PACKAGE__, $s);
+    $s->log->debug("[$domain:$level] ", @msg) if ($level >= $conf->{level} 
+        and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
+}
+
 =head2 log_debugf DOMAIN, LEVEL, FORMAT, ARGS
 
 Adds $r->log_debugf to the mod_perl request object. Same as above, but
@@ -69,6 +78,13 @@ sub Apache2::RequestRec::log_debugf {
     my $conf = Apache2::Module::get_config
                 (__PACKAGE__, $r->server, $r->per_dir_config);
     $r->log->debugf("[$domain:$level] $fmt", @msg) if ($level >= $conf->{level} 
+        and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
+}
+
+sub Apache2::ServerRec::log_debugf {
+    my ($s, $domain, $level, $fmt, @msg)  = @_;
+    my $conf = Apache2::Module::get_config(__PACKAGE__, $s);
+    $s->log->debugf("[$domain:$level] $fmt", @msg) if ($level >= $conf->{level} 
         and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
 }
 

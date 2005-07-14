@@ -6,10 +6,10 @@ README
 lib/Apache/DebugLog/Config.pm
 lib/Apache/DebugLog.pm
 lib/Apache2/DebugLog.pm
-t/00-load.t
 t/conf/extra.last.conf.in
-t/pod-coverage.t
+t/response/Does_It_Work.pm
+t/00-load.t
 t/pod.t
-t/response/TestApache/does_it_work.pm
 t/TEST.PL
+t/pod-coverage.t
 META.yml                                 Module meta-data (added by MakeMaker)

@@ -9,7 +9,7 @@ use Apache::LogF                ();
 use XSLoader                    ();
 use Carp                        ();
 
-our $VERSION    = '0.01';
+our $VERSION    = '0.02';
 
 XSLoader::load(__PACKAGE__, $VERSION) if ($ENV{MOD_PERL});
 
@@ -56,6 +56,13 @@ sub Apache::log_debug {
         and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
 }
 
+sub Apache::Server::log_debug {
+    my ($s, $domain, $level, @msg)  = @_;
+    my $conf = Apache::ModuleConfig->get($s);
+    $s->log->debug("[$domain:$level] ", @msg) if ($level >= $conf->{level} 
+        and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
+}
+
 =head2 log_debugf DOMAIN, LEVEL, FORMAT, ARGS
 
 Adds log_debugf to the mod_perl request object. Same as above, but
@@ -67,6 +74,13 @@ sub Apache::log_debugf {
     my ($r, $domain, $level, $fmt, @msg)  = @_;
     my $conf = Apache::ModuleConfig->get($r);
     $r->log->debugf("[$domain:$level] $fmt", @msg) if ($level >= $conf->{level} 
+        and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
+}
+
+sub Apache::Server::log_debugf {
+    my ($s, $domain, $level, $fmt, @msg)  = @_;
+    my $conf = Apache::ModuleConfig->get($s);
+    $s->log->debugf("[$domain:$level] $fmt", @msg) if ($level >= $conf->{level} 
         and ($conf->{domain}{'*'} or $conf->{domain}{$domain}));
 }
 

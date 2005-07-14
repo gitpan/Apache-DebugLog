@@ -48,7 +48,7 @@ Apache::TestMM::generate_script('t/TEST');
 WriteMakefile(
     NAME                => 'Apache::DebugLog',
     AUTHOR              => 'dorian taylor <dorian@cpan.org>',
-    VERSION_FROM        => 'lib/Apache/DebugLog.pm',
+    VERSION_FROM        => 'lib/Apache/DebugLog/Config.pm',
     INC                 => $INC,
     PREREQ_PM           => $PREREQ_PM,
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

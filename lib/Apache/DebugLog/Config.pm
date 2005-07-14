@@ -10,14 +10,14 @@ Apache::DebugLog::Config - Multidimensional debug logging in mod_perl
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
 our ($VERSION, @DIRECTIVES, $IMPORT_GOT_RUN);
 
 BEGIN {
-    $VERSION        = '0.01';
+    $VERSION        = '0.02';
     $IMPORT_GOT_RUN = 0;
 
     eval { require mod_perl2 };
@@ -25,6 +25,7 @@ BEGIN {
     # this should be defined by something else
     if ($mod_perl2::VERSION) {
         require Apache2::Module;
+        require Apache2::CmdParms;
         require Apache2::Const;
         Apache::Const->import(-compile => qw(TAKE1 ITERATE OR_ALL));
     }
@@ -72,6 +73,10 @@ sub import {
 sub _set_loglevel {
     my ($cfg, $parms, $level) = @_;
     $cfg->{level} = $level;
+    unless ($parms->path) {
+        my $scfg = Apache2::Module::get_config($cfg, $parms->server);
+        $scfg->{level} = $level;
+    }
 }
 
 sub _add_domain {
@@ -79,6 +84,11 @@ sub _add_domain {
     my ($op) = ($domain =~ s/^[+-]//);
     $cfg->{domain} ||= {};
     $cfg->{domain}{$domain} = $op eq '-' ? 0 : 1;
+    unless ($parms->path) {
+        my $scfg = Apache2::Module::get_config($cfg, $parms->server);
+        $scfg->{domain} ||= {};
+        $scfg->{domain}{$domain} = $op eq '-' ? 0 : 1;
+    }
 }
 
 =head1 SYNOPSIS
